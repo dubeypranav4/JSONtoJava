@@ -1,0 +1,12 @@
+{
+  "data":{
+    "name":"Pranav Dubey",
+    "age" : "15",
+    "fpoint":"23.45"
+  },
+  "contract":{
+    "name":"java.lang.String",
+    "age":"java.lang.Integer",
+    "fpoint":"java.lang.Double"
+  }
+}
