@@ -1,23 +1,20 @@
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.FileReader;
+import java.io.IOException;
 
 public class MainClass {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, ParseException {
 	ObjectInstantiater objectInstantiater = new ObjectInstantiater();
 
-		JSONObject obj = new JSONObject("{\n" +
-				"  \"data\":{\n" +
-				"    \"name\":\"Pranav Dubey\",\n" +
-				"    \"age\" : \"15\",\n" +
-				"    \"fpoint\":\"23.45\"\n" +
-				"  },\n" +
-				"  \"contract\":{\n" +
-				"    \"name\":\"java.lang.String\",\n" +
-				"    \"age\":\"java.lang.Integer\",\n" +
-				"    \"fpoint\":\"java.lang.Double\"\n" +
-				"  }\n" +
-				"}");
-	objectInstantiater.instantiate(obj);
+		String loc  = System.getProperty("user.dir") + "/src/main/resources/advancedPayload.json";
+
+		JSONParser parser = new JSONParser();
+		org.json.JSONObject obj = new org.json.JSONObject(parser.parse(new FileReader(loc)).toString());
+		objectInstantiater.instantiate(obj);
 
 
 	}

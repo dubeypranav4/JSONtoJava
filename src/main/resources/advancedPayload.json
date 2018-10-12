@@ -2,11 +2,13 @@
   "data":{
     "name":"Pranav Dubey",
     "age" : "15",
-    "fpoint":"23.45"
+    "fpoint":"23.45",
+    "salary":"100"
   },
   "contract":{
     "name":"java.lang.String",
     "age":"java.lang.Integer",
-    "fpoint":"java.lang.Double"
+    "fpoint":"java.lang.Double",
+    "salary":"java.lang.Integer"
   }
 }

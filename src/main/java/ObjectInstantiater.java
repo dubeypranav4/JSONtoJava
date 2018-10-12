@@ -1,9 +1,8 @@
 import com.sun.deploy.util.StringUtils;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtField;
+import javassist.*;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,14 +24,64 @@ public class ObjectInstantiater {
 	private Object getObject(JSONObject data, JSONObject meta) {
 	Map<String,String> dataMap = getTreeMapFromJSON(data);
 		Map<String, String> metaMap = getTreeMapFromJSON(meta);
-		ClassPool pool = ClassPool.getDefault();
-		CtClass newClass = pool.makeClass("NewClass");
-		return getObjectFromMap(dataMap,metaMap);
+
+		return getObjectFromMap("objects.NewClass",metaMap);
 	}
 
 	//todo make one hashmap and another one tree map to increase the efficiency
-	private Object getObjectFromMap(Map<String, String> dataMap, Map<String, String> metaMap) {
-		for ()
+	private Object getObjectFromMap(String name, Map<String, String> metaMap) {
+		Iterator<String> metaKeys = metaMap.keySet().iterator();
+
+		ClassPool pool = ClassPool.getDefault();
+		CtClass ngClass = pool.makeClass(name);
+		CtField field = null;
+		try {
+			while (metaKeys.hasNext()) {
+				String fieldName = metaKeys.next();
+				String fieldType = metaMap.get(fieldName);
+
+				field = new CtField(pool.get(fieldType), fieldName, ngClass);
+				ngClass.addField(field);
+				ngClass.addMethod(CtNewMethod.setter(getSetterName(fieldName),field));
+				ngClass.addMethod(CtNewMethod.setter(getGetterName(fieldName),field));
+			}
+		}catch (Exception e){
+
+		}
+		try {
+			ngClass.writeFile();
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (CannotCompileException e) {
+			e.printStackTrace();
+		}
+
+return ngClass;
+	}
+
+	private String getSetterName(String fieldName) {
+		StringBuilder name = new StringBuilder();
+		name.append("set");
+		char[] chars = fieldName.toCharArray();
+		if (Character.isLowerCase(chars[0])){
+			chars[0] = Character.toUpperCase(chars[0]);
+		}
+		name.append(chars);
+		return name.toString();
+
+	}
+	private String getGetterName(String fieldName) {
+		StringBuilder name = new StringBuilder();
+		name.append("get");
+		char[] chars = fieldName.toCharArray();
+		if (Character.isLowerCase(chars[0])){
+			chars[0] = Character.toUpperCase(chars[0]);
+		}
+		name.append(chars);
+		return name.toString();
+
 	}
 
 	private Map<String, String> getTreeMapFromJSON(JSONObject data) {
